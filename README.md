@@ -6,9 +6,9 @@ ATProto Record Explorer. Browse identities, collections, and records across the 
 
 ## What is this?
 
-A tool for exploring [AT Protocol](https://atproto.com) data. Look up handles and DIDs, browse collections, view decoded records with clickable references.
+A tool for exploring [AT Protocol](https://atproto.com) data. Look up handles and DIDs, browse collections, and view decoded records.
 
-Named after *radiosonde* — instrument packages carried by weather balloons to measure the atmosphere.
+Named after *radiosonde*, instrument packages carried by weather balloons to measure the atmosphere.
 
 ## Built with
 

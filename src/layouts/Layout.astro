@@ -1,0 +1,264 @@
+---
+import HeaderSearch from "../components/HeaderSearch.svelte";
+import Logo from "../components/Logo.svelte";
+
+interface Props {
+    title?: string;
+    description?: string;
+    hideSearch?: boolean;
+    hideHeader?: boolean;
+    ogPath?: string; // Path for OG image: e.g., "", "iammatthias.com", "did:plc:xxx/app.bsky.feed.post"
+    canonicalPath?: string; // Override canonical URL path
+}
+
+const {
+    title = "Sonde",
+    description = "Atproto Explorer - Browse DIDs, repositories, collections, and records on the AT Protocol network.",
+    hideSearch = false,
+    hideHeader = false,
+    ogPath = "",
+    canonicalPath,
+} = Astro.props;
+
+const fullTitle = title === "Sonde" ? title : `${title} — Sonde`;
+
+// Production URL for canonical/OG URLs
+const prodUrl = "https://sonde.blue";
+const currentPath = canonicalPath ?? Astro.url.pathname;
+const canonicalUrl = `${prodUrl}${currentPath}`;
+// Always use production URL for OG images (social platforms need absolute public URLs)
+const ogImageUrl = `${prodUrl}/api/og/${ogPath}`;
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <!-- Primary Meta Tags -->
+        <title>{fullTitle}</title>
+        <meta name="title" content={fullTitle} />
+        <meta name="description" content={description} />
+        <meta name="theme-color" content="#3b82f6" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={canonicalUrl} />
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:title" content={fullTitle} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImageUrl} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="Sonde" />
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={canonicalUrl} />
+        <meta name="twitter:title" content={fullTitle} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImageUrl} />
+
+        <!-- Additional Meta -->
+        <meta name="application-name" content="Sonde" />
+        <meta name="apple-mobile-web-app-title" content="Sonde" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="format-detection" content="telephone=no" />
+
+        <!-- Register service worker for offline caching -->
+        <script is:inline>
+            if ("serviceWorker" in navigator) {
+                window.addEventListener("load", () => {
+                    navigator.serviceWorker.register("/sw.js").catch(() => {
+                        // Service worker registration failed, ignore
+                    });
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <div class="page">
+            {
+                !hideHeader && (
+                    <header class="header">
+                        <div class="container header-content">
+                            <a href="/" class="logo-link">
+                                <Logo size="sm" showWordmark client:load />
+                            </a>
+                            {!hideSearch && <HeaderSearch client:load />}
+                        </div>
+                    </header>
+                )
+            }
+
+            <main class="main">
+                <div class="container">
+                    <slot />
+                </div>
+            </main>
+
+            <footer class="footer">
+                <div class="container footer-content">
+                    <div class="footer-tools">
+                        <span class="footer-label">Tools</span>
+                        <nav class="tools-nav">
+                            <a href="/jetstream">Jetstream</a>
+                            <a href="/firehose">Firehose</a>
+                            <a href="/labels">Labels</a>
+                            <a href="/car">CAR</a>
+                            <a href="/plc">PLC</a>
+                        </nav>
+                    </div>
+                    <div class="footer-links">
+                        <a href="/about">About</a>
+                        <span class="sep">·</span>
+                        <a
+                            href="https://atproto.com"
+                            target="_blank"
+                            rel="noopener">Protocol Docs</a
+                        >
+                        <span class="sep">·</span>
+                        <a
+                            href="https://github.com/iammatthias/sonde"
+                            target="_blank"
+                            rel="noopener">GitHub</a
+                        >
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>
+
+<style is:global>
+    @import "../styles/global.css";
+</style>
+
+<style>
+    .page {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header {
+        padding: var(--space-1) 0;
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: var(--space-3);
+        height: 36px;
+    }
+
+    @media (min-width: 768px) {
+        .header-content {
+            height: 50px;
+        }
+    }
+
+    .header-content :global(.search) {
+        margin-left: auto;
+    }
+
+    .logo-link {
+        border-bottom: none;
+        flex-shrink: 0;
+    }
+
+    .logo-link:hover {
+        border-bottom: none;
+        background: transparent;
+    }
+
+    .main {
+        flex: 1;
+        padding: var(--space-3) 0;
+    }
+
+    .footer {
+        padding: var(--space-2) 0;
+        border-top: var(--border-weight) solid var(--color-border-light);
+        font-size: var(--text-xs);
+        color: var(--color-text-3);
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+    }
+
+    .footer-tools {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+    }
+
+    .footer-label {
+        font-weight: var(--weight-semibold);
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wider);
+        font-size: var(--text-2xs);
+    }
+
+    .tools-nav {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+    }
+
+    .footer-links {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+    }
+
+    .footer-links .sep {
+        color: var(--color-border-light);
+    }
+
+    .footer a {
+        color: var(--color-text-3);
+        border-bottom: none;
+        padding: var(--space-0) var(--space-1);
+        margin: calc(-1 * var(--space-0)) calc(-1 * var(--space-1));
+        border-radius: var(--radius-sm);
+        transition:
+            color 0.15s ease,
+            background 0.15s ease;
+    }
+
+    .footer a:hover {
+        color: var(--color-accent-text);
+        background: var(--color-hover-bg);
+    }
+
+    @media (max-width: 767px) {
+        .footer-content {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .footer-tools {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-1);
+        }
+
+        .tools-nav {
+            flex-wrap: wrap;
+        }
+    }
+</style>

@@ -1,0 +1,21 @@
+---
+import Layout from "../layouts/Layout.astro";
+import HistoryList from "../components/HistoryList.svelte";
+---
+
+<Layout title="History" description="Your search history">
+    <h1>History</h1>
+    <p class="subtitle">Your recent searches</p>
+    <HistoryList client:load />
+</Layout>
+
+<style>
+    h1 {
+        margin-bottom: var(--space-1);
+    }
+
+    .subtitle {
+        color: var(--color-text-3);
+        margin-bottom: var(--space-4);
+    }
+</style>

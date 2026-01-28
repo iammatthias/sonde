@@ -1,0 +1,108 @@
+---
+import Layout from "./Layout.astro";
+
+interface BreadcrumbItem {
+    label: string;
+    href?: string;
+    mono?: boolean;
+}
+
+interface Props {
+    title?: string;
+    description?: string;
+    breadcrumbs: BreadcrumbItem[];
+    ogPath?: string;
+}
+
+const { title, description, breadcrumbs, ogPath } = Astro.props;
+---
+
+<Layout title={title} description={description} ogPath={ogPath}>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+            {
+                breadcrumbs.map((item, index) => (
+                    <li>
+                        {index > 0 && (
+                            <span class="sep" aria-hidden="true">
+                                /
+                            </span>
+                        )}
+                        {item.href && index < breadcrumbs.length - 1 ? (
+                            <a
+                                href={item.href}
+                                class:list={{ mono: item.mono }}
+                            >
+                                {item.label}
+                            </a>
+                        ) : (
+                            <span
+                                class:list={["current", { mono: item.mono }]}
+                                aria-current={
+                                    index === breadcrumbs.length - 1
+                                        ? "page"
+                                        : undefined
+                                }
+                            >
+                                {item.label}
+                            </span>
+                        )}
+                    </li>
+                ))
+            }
+        </ol>
+    </nav>
+
+    <slot />
+</Layout>
+
+<style>
+    .breadcrumb {
+        margin-bottom: var(--space-4);
+        padding-bottom: var(--space-3);
+        border-bottom: var(--border-weight) solid var(--color-border-light);
+    }
+
+    .breadcrumb ol {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: var(--space-1);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: var(--text-sm);
+    }
+
+    .breadcrumb li {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-1);
+    }
+
+    .breadcrumb a {
+        color: var(--color-text);
+        text-decoration: none;
+        border-bottom: var(--border-weight) solid transparent;
+        transition:
+            border-color 0.1s ease,
+            color 0.1s ease;
+    }
+
+    .breadcrumb a:hover {
+        border-bottom-color: var(--color-text);
+    }
+
+    .sep {
+        color: var(--color-text-3);
+        user-select: none;
+    }
+
+    .current {
+        color: var(--color-text-3);
+    }
+
+    .mono {
+        font-family: var(--font-mono);
+    }
+</style>

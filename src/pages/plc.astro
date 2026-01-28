@@ -1,0 +1,8 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PlcExplorer from "../components/PlcExplorer.svelte";
+---
+
+<Layout title="PLC Directory" description="Explore the PLC DID directory - view operation history and recent registrations">
+    <PlcExplorer client:load />
+</Layout>

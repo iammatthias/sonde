@@ -1,0 +1,8 @@
+---
+import Layout from "../layouts/Layout.astro";
+import FirehoseViewer from "../components/FirehoseViewer.svelte";
+---
+
+<Layout title="Firehose" description="Raw ATProto relay event stream viewer">
+    <FirehoseViewer client:load />
+</Layout>

@@ -1,0 +1,12 @@
+---
+import Layout from "../layouts/Layout.astro";
+import HomeSearch from "../components/HomeSearch.svelte";
+---
+
+<Layout
+    title="Sonde"
+    description="Explore the AT Protocol network - browse records, decode data, follow the graph."
+    hideSearch={true}
+>
+    <HomeSearch client:load />
+</Layout>

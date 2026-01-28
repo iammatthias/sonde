@@ -1,0 +1,29 @@
+{
+  "name": "",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^12.6.12",
+    "@astrojs/svelte": "^7.2.5",
+    "@atproto/api": "^0.18.17",
+    "@ipld/car": "^5.4.2",
+    "@ipld/dag-cbor": "^9.2.5",
+    "@takumi-rs/image-response": "^0.66.2",
+    "@types/react": "^19.2.9",
+    "@types/react-dom": "^19.2.3",
+    "astro": "^5.16.15",
+    "cbor-x": "^1.6.0",
+    "marked": "^17.0.1",
+    "multiformats": "^13.4.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "svelte": "^5.48.3",
+    "typescript": "^5.9.3"
+  }
+}

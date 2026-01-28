@@ -1,0 +1,144 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Logo from "../components/Logo.svelte";
+---
+
+<Layout title="About" description="About Sonde, an ATProto record explorer.">
+    <div class="about">
+        <section class="section">
+            <h2>What is this?</h2>
+            <p>
+                A tool for browsing <a
+                    href="https://atproto.com"
+                    target="_blank"
+                    rel="noopener">AT Protocol</a
+                > data. Look up identities, explore collections, view records.
+            </p>
+        </section>
+
+        <section class="section">
+            <h2>Why "Sonde"?</h2>
+            <p>
+                A <em>radiosonde</em> is an instrument package carried by weather
+                balloons to measure the atmosphere. Seemed fitting.
+            </p>
+        </section>
+
+        <footer class="about-footer">
+            <a href="/" class="back-link">← Back</a>
+        </footer>
+    </div>
+</Layout>
+
+<style>
+    .about {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: var(--space-4) 0;
+    }
+
+    .about-header {
+        text-align: center;
+        margin-bottom: var(--space-6);
+    }
+
+    .about-header h1 {
+        font-size: var(--text-lg);
+        font-weight: var(--weight-semibold);
+        margin-top: var(--space-3);
+        margin-bottom: var(--space-1);
+    }
+
+    .tagline {
+        color: var(--color-text-2);
+        font-size: var(--text-base);
+    }
+
+    .section {
+        margin-bottom: var(--space-5);
+        padding-top: var(--space-5);
+        border-top: var(--border-weight) solid var(--color-border-light);
+    }
+
+    .section:first-of-type {
+        border-top: none;
+        padding-top: 0;
+    }
+
+    .section h2 {
+        font-size: var(--text-sm);
+        font-weight: var(--weight-semibold);
+        margin-bottom: var(--space-1);
+        color: var(--color-text);
+    }
+
+    .section p {
+        color: var(--color-text-2);
+        line-height: var(--leading-relaxed);
+    }
+
+    .section a {
+        color: var(--color-accent-text);
+        border-bottom: 1px solid var(--blue-200);
+        transition: border-color 0.15s ease;
+    }
+
+    .section a:hover {
+        border-bottom-color: var(--color-accent);
+    }
+
+    .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-2);
+    }
+
+    @media (max-width: 480px) {
+        .tech-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    .tech-card {
+        display: flex;
+        flex-direction: column;
+        padding: var(--space-2) var(--space-3);
+        background: var(--color-surface);
+        border: var(--border-weight) solid var(--color-border-light);
+        border-bottom: var(--border-weight) solid var(--color-border-light);
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        transition:
+            border-color 0.15s ease,
+            box-shadow 0.15s ease;
+    }
+
+    .tech-card:hover {
+        border-color: var(--color-accent);
+        border-bottom-color: var(--color-accent);
+        box-shadow: var(--shadow-accent);
+    }
+
+    .tech-name {
+        font-weight: var(--weight-medium);
+        color: var(--color-text);
+        font-size: var(--text-sm);
+    }
+
+    .about-footer {
+        margin-top: var(--space-6);
+        padding-top: var(--space-4);
+        border-top: var(--border-weight) solid var(--color-border-light);
+    }
+
+    .back-link {
+        color: var(--color-text-2);
+        font-size: var(--text-sm);
+        border-bottom: none;
+        transition: color 0.15s ease;
+    }
+
+    .back-link:hover {
+        color: var(--color-accent-text);
+    }
+</style>

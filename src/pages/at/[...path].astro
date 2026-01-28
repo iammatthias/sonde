@@ -1,0 +1,140 @@
+---
+export const prerender = false;
+
+import AtLayout from "../../layouts/AtLayout.astro";
+import AtExplorer from "../../components/AtExplorer.svelte";
+import {
+    resolveHandle,
+    resolveIdentity,
+    isDid,
+    normalizeIdentifier,
+} from "../../lib/identity";
+
+// Catch-all route for AT-URIs
+// Supports:
+//   /at/did:plc:xxx
+//   /at/did:plc:xxx/app.bsky.feed.post
+//   /at/did:plc:xxx/app.bsky.feed.post/rkey
+//   /at/handle.bsky.social (redirects to DID)
+//   /at://did:plc:xxx/... (with protocol prefix)
+
+const { path } = Astro.params;
+
+if (!path) {
+    return Astro.redirect("/");
+}
+
+// Handle at:// prefix if present
+let cleanPath = path.startsWith("/") ? path.slice(1) : path;
+
+// Parse the path into components
+const parts = cleanPath.split("/");
+let identifier = parts[0];
+const collection = parts[1] || null;
+const rkey = parts[2] || null;
+
+// Normalize the identifier
+identifier = normalizeIdentifier(identifier);
+
+// If it's a handle, resolve to DID and redirect
+if (!isDid(identifier)) {
+    try {
+        const did = await resolveHandle(identifier);
+        const newPath = [did, collection, rkey].filter(Boolean).join("/");
+        return Astro.redirect(`/at/${newPath}`);
+    } catch (e) {
+        // Will show error in the component
+    }
+}
+
+// Try to resolve identity for breadcrumb display
+let displayName = identifier;
+try {
+    const identity = await resolveIdentity(identifier);
+    displayName = `@${identity.handle}`;
+} catch {
+    // Fall back to DID if resolution fails
+    displayName = identifier.slice(0, 20) + "...";
+}
+
+// Build breadcrumbs
+interface BreadcrumbItem {
+    label: string;
+    href?: string;
+    mono?: boolean;
+}
+
+const breadcrumbs: BreadcrumbItem[] = [];
+
+// Identity breadcrumb
+if (collection || rkey) {
+    // Link to identity if we're deeper
+    breadcrumbs.push({
+        label: displayName,
+        href: `/at/${identifier}`,
+    });
+} else {
+    // Current page is identity
+    breadcrumbs.push({
+        label: displayName,
+    });
+}
+
+// Collection breadcrumb
+if (collection) {
+    const collectionName = collection.split(".").pop() || collection;
+    if (rkey) {
+        // Link to collection if we're on a record
+        breadcrumbs.push({
+            label: collectionName,
+            href: `/at/${identifier}/${collection}`,
+        });
+    } else {
+        // Current page is collection
+        breadcrumbs.push({
+            label: collectionName,
+        });
+    }
+}
+
+// Record breadcrumb
+if (rkey) {
+    breadcrumbs.push({
+        label: rkey,
+        mono: true,
+    });
+}
+
+// Build title
+let title = displayName;
+if (collection) {
+    const collectionName = collection.split(".").pop();
+    title = rkey ? `${collectionName}/${rkey}` : collectionName || collection;
+}
+
+// Build ogPath based on what we're viewing
+// Format: identifier, identifier/collection, or identifier/collection/rkey
+const ogPath = [identifier, collection, rkey].filter(Boolean).join("/");
+
+// Build description based on context
+let pageDescription = `View ${displayName} on Sonde`;
+if (collection && rkey) {
+    pageDescription = `Record ${rkey} in ${collection.split(".").pop()} collection by ${displayName}`;
+} else if (collection) {
+    pageDescription = `${collection.split(".").pop()} collection by ${displayName}`;
+}
+---
+
+<AtLayout
+    title={title}
+    description={pageDescription}
+    breadcrumbs={breadcrumbs}
+    ogPath={ogPath}
+>
+    <AtExplorer
+        did={identifier}
+        collection={collection}
+        rkey={rkey}
+        client:load
+    />
+</AtLayout>
